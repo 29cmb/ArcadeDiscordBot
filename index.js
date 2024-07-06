@@ -48,5 +48,6 @@ client.on(Discord.Events.InteractionCreate, async interaction => {
 })
 
 require("dotenv").config()
+require("./deploy-commands")()
 
 client.login(process.env.Token)
