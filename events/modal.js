@@ -1,5 +1,5 @@
 const { Events } = require("discord.js")
-const axios = require("axois")
+const axios = require("axios")
 const db = require('../db.js')
 
 module.exports = {
