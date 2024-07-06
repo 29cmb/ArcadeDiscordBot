@@ -1,7 +1,6 @@
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = `mongodb+srv://${process.env.dbUsername}:${process.env.dbPassword}@${process.env.dbURL}/?retryWrites=true&w=majority&appName=${process.env.dbAppName}`;
-console.log(uri)
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -11,8 +10,6 @@ const client = new MongoClient(uri, {
 });
 
 const database = client.db(process.env.dbName)
-
-console.log(process.env.dbName, process.env.credentialsCollectionName)
 
 module.exports = {
     client: client,
