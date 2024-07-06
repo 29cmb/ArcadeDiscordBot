@@ -26,38 +26,63 @@ module.exports = {
         }
     },
     async insertOne(collection, data){
+        var success = false
+
         try {
             await collection.insertOne(data)
-            return true
+            success = true
         }catch(e){
             console.log(e)
-            return false
+            success = false
         }
+
+        return success
     },
     async findAll(collection, query){
         try {
+            await client.connect();
             const results = await collection.find(query)
+            client.close()
             return results
         } catch(e) {
             console.log(e)
+            client.close()
             return false
         }
     },
     async findOne(collection, query){
         try {
+            await client.connect()
             const results = await collection.findOne(query)
+            client.close()
             return results
         } catch(e) {
             console.log(e)
+            client.close()
             return false
         }
     },
     async deleteOne(collection, query){
         try {
+            await client.connect()
             await collection.deleteOne(query)
+            client.close()
             return true
         } catch(e) {
             console.log(e)
+            client.close()
+            return false
+        }
+    },
+    async updateOne(collection, query, update){
+        try {
+            await client.connect()
+            await collection.findOneAndUpdate(query, update)
+            client.close()
+            return true
+        } catch(e) {
+            console.log(e)
+            client.close()
             return false
         }
     }

@@ -40,5 +40,6 @@ for (const file of eventFiles) {
 
 
 require("./modules/deploy-commands")()
+require("./modules/db.js").run()
 
 client.login(process.env.Token)

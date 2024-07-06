@@ -1,25 +1,19 @@
 const { SlashCommandBuilder } = require('discord.js');
 const axios = require('axios')
-
+const db = require("../../modules/db.js")
+const encryption = require("../../modules/encryption.js")
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('stats')
-		.setDescription('Checks your stats')
-        .addStringOption(option => 
-            option
-            .setName("id")
-                .setDescription("Set the slack user ID to check")
-                .setRequired(true)
-        )
-        .addStringOption(option => 
-            option
-                .setName("key")
-                .setDescription("Your hack club API key")
-                .setRequired(true) // TODO: Hook up to a database so you just have to run /setCredentials
-        ),
+		.setDescription('Checks your stats'),
 	async execute(interaction) {
-		const slackID = interaction.options.getString("id")
-        const key = interaction.options.getString("key")
+        const data = await db.findOne(db.collections.credentials, {userId: interaction.user.id})
+		if(!data) return interaction.reply("You need to run /register first!")
+
+        console.log(data, data.slackId, data.apiKey)
+        const slackID = encryption.decrypt(data.slackId)
+        const key = encryption.decrypt(data.apiKey)
+        
         const url = `https://hackhour.hackclub.com/api/stats/${slackID}`
         axios.get(url, {
             headers: {

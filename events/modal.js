@@ -23,13 +23,27 @@ module.exports = {
             }).then(response => {
                 const data = response.data
                 if(data.ok == true){
-                    interaction.reply({ content: "Credentials saved successfully!", ephemeral: true})
+                    var success
 
-                    db.insertOne(db.collections.credentials, {
-                        userId: interaction.user.id,
-                        slackId: encryption.encrypt(uid),
-                        apiKey: encryption.encrypt(apiKey)
-                    })
+                    if(db.findOne(db.collections.credentials, { userId: interaction.user.id })){
+                        success = db.updateOne(db.collections.credentials, { userId: interaction.user.id }, {
+                            userId: interaction.user.id,
+                            slackId: encryption.encrypt(uid),
+                            apiKey: encryption.encrypt(apiKey)
+                        })
+                    } else {
+                        success = db.insertOne(db.collections.credentials, {
+                            userId: interaction.user.id,
+                            slackId: encryption.encrypt(uid),
+                            apiKey: encryption.encrypt(apiKey)
+                        })
+                    }
+                    
+                    if(success){
+                        interaction.reply({ content: "Credentials saved successfully!", ephemeral: true })
+                    } else {
+                        interaction.reply({ content: "There was an error trying to save your credentials. Please try again later", ephemeral: true })
+                    }
                 }
             }).catch(err => {
                 if(err.response){
