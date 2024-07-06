@@ -1,6 +1,7 @@
 const { Events } = require("discord.js")
 const axios = require("axios")
-const db = require('../db.js')
+const db = require('../modules/db.js')
+const encryption = require("../modules/encryption.js")
 
 module.exports = {
     name: Events.InteractionCreate,
@@ -22,9 +23,13 @@ module.exports = {
             }).then(response => {
                 const data = response.data
                 if(data.ok == true){
-                    // valid credentials
                     interaction.reply({ content: "Credentials saved successfully!", ephemeral: true})
-                    // todo: save the credentials
+
+                    db.insertOne(db.collections.credentials, {
+                        userId: interaction.user.id,
+                        slackId: encryption.encrypt(uid),
+                        apiKey: encryption.encrypt(apiKey)
+                    })
                 }
             }).catch(err => {
                 if(err.response){

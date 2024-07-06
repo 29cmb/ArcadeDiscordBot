@@ -4,7 +4,7 @@ const Discord = require("discord.js")
 const fs = require('fs')
 const path = require('path')
 const client = new Discord.Client({ intents: [Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.MessageContent] })
-
+require("dotenv").config()
 client.commands = new Discord.Collection()
 
 const foldersPath = path.join(__dirname, 'commands');
@@ -38,7 +38,7 @@ for (const file of eventFiles) {
 	}
 }
 
-require("dotenv").config()
-require("./deploy-commands")()
+
+require("./modules/deploy-commands")()
 
 client.login(process.env.Token)
