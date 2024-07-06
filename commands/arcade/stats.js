@@ -27,9 +27,10 @@ module.exports = {
                 "User-Agent": "Arcade-Discord-Bot/0.1.0",
                 "Content-Tye": "application/json"
             }
-        }).then(data => {
-            if(data.data.ok == true){
-                interaction.reply({ content: `Total Sessions: ${JSON.parse(data).data.sessions}\nTotal minutes: ${JSON.parse(data).data.total}`, ephemeral: true})
+        }).then(response => {
+            if(response.data.ok == true){
+                console.log(response.data)
+                interaction.reply({ content: `Total Sessions: ${response.data.data.sessions}\nTotal minutes: ${response.data.data.total}`, ephemeral: true})
             }
         })
 	},
