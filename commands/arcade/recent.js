@@ -37,10 +37,10 @@ module.exports = {
                     { name: "Minutes earned", value: data.elapsed.toString() },
                     { name: "Goal", value: data.goal }
                 )
-                .setThumbnail("https://imgs.search.brave.com/SPM80GBg6hoGnZCbJf4-PzyiqWlJRGPiRJTdrPh17HA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMuaGFja2NsdWIu/Y29tL2ljb24tcm91/bmRlZC5zdmc")  
+                .setThumbnail("https://cloud-g7rxbaej0-hack-club-bot.vercel.app/0hackclubdiscordicon.png")  
                 .setTimestamp()
                 .setFooter({text: `Unofficial  •  Made by devcmb`, iconURL: "https://cdn.discordapp.com/avatars/998343447524155402/ee6966eccb8f087f54da4c204ab19b29.webp?size=80"})
-                .setColor("Red")
+                .setColor("Blurple")
                 if(data.completed == false && data.paused == false){
                     embed.setDescription("Why are you looking at the bot while in a session? Go make something awesome!")
                 }
