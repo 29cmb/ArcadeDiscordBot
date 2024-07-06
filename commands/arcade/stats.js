@@ -8,9 +8,9 @@ module.exports = {
 		.setDescription('Checks your stats'),
 	async execute(interaction) {
         await db.client.connect()
-        const data = await db.collections.credentials.findOne({userId: interaction.user.id}).then(() => {
-            db.client.close()
-        })
+        const data = await db.collections.credentials.findOne({userId: interaction.user.id})
+        await db.client.close()
+        
 		if(!data) return interaction.reply("You need to run /register first!")
 
         const slackID = encryption.decrypt(data.slackId)
