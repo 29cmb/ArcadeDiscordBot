@@ -15,7 +15,7 @@ module.exports = {
 
             axios.get(url, {
                 headers: {
-                    "Authorization": `Bearer ${key}`,
+                    "Authorization": `Bearer ${apiKey}`,
                     "User-Agent": "Arcade-Discord-Bot/0.1.0",
                     "Content-Tye": "application/json"
                 }  
