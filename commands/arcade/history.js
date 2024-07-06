@@ -1,16 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const axios = require('axios')
 const db = require("../../modules/db.js")
-const encryption = require("../../modules/encryption.js")
-
-const previousButton = new ButtonBuilder()
-.setCustomId("previousButtonHistory")
-.setEmoji("⬅️")
-.setStyle(ButtonStyle.Primary)
-const nextButton = new ButtonBuilder()
-.setCustomId("nextButtonHistory")
-.setEmoji("➡️")
-.setStyle(ButtonStyle.Primary)
+const encryption = require("../../modules/encryption.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -63,8 +54,18 @@ module.exports = {
         })
 
         if(embeds.length != 0){
-            
-            interaction.reply({ embeds: [embeds[page - 1]], buttons: [previousButton, nextButton] })
+            const previousButton = new ButtonBuilder()
+            .setCustomId("previousButtonHistory")
+            .setEmoji("⬅️")
+            .setStyle(ButtonStyle.Primary)
+            const nextButton = new ButtonBuilder()
+            .setCustomId("nextButtonHistory")
+            .setEmoji("➡️")
+            .setStyle(ButtonStyle.Primary)
+            const actionRow = new ActionRowBuilder()
+            actionRow.addComponents(previousButton, nextButton)
+
+            interaction.reply({ embeds: [embeds[page - 1]], components: [actionRow] })
         } else {
             interaction.reply("You don't have any history!")
         }
