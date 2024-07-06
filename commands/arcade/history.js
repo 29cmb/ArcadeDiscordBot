@@ -2,6 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, Butt
 const axios = require('axios')
 const db = require("../../modules/db.js")
 const encryption = require("../../modules/encryption.js");
+
 const previousButton = new ButtonBuilder()
 .setCustomId("previousButtonHistory")
 .setEmoji("⬅️")
@@ -39,6 +40,7 @@ module.exports = {
             }
         }).then(response => {
             if(response.data.ok == true){
+                var p = 1
                 response.data.data.forEach(s => {
                     const embed = new EmbedBuilder()
                     .setAuthor({name: "Arcade History"})
@@ -50,8 +52,9 @@ module.exports = {
                     )
                     .setThumbnail("https://imgs.search.brave.com/SPM80GBg6hoGnZCbJf4-PzyiqWlJRGPiRJTdrPh17HA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMuaGFja2NsdWIu/Y29tL2ljb24tcm91/bmRlZC5zdmc")  
                     .setTimestamp()
-                    .setFooter({text: `Unofficial  •  Made by devcmb  •  Page ${page}/${response.data.data.length + 1}`, iconURL: "https://cdn.discordapp.com/avatars/998343447524155402/ee6966eccb8f087f54da4c204ab19b29.webp?size=80"})
+                    .setFooter({text: `Unofficial  •  Made by devcmb  •  Page ${p}/${response.data.data.length + 1}`, iconURL: "https://cdn.discordapp.com/avatars/998343447524155402/ee6966eccb8f087f54da4c204ab19b29.webp?size=80"})
                     .setColor("Red")
+                    p++
                     embeds.push(embed)
                 })
             } else {
@@ -64,18 +67,32 @@ module.exports = {
 
         if(embeds.length != 0){
             const reply = await interaction.reply({ embeds: [embeds[page - 1]], components: [actionRow] })
-            const b = await reply.awaitMessageComponent({ time: 240_000 })
-            if(b.user.id == interaction.user.id){
-                if(b.customId == "previousButtonHistory" && page > 1){
-                    await reply.edit({ embeds: [embeds[page]], components: [actionRow] })
-                    page++
-                } else if(b.customId == "nextButtonHistory" && page < embeds.length) {
-                    await reply.edit({ embeds: [embeds[page]], components: [actionRow] })
-                    page--
+            async function createCollector(){
+                const b = await reply.awaitMessageComponent({ time: 240_000 })
+                if(b.user.id == interaction.user.id){
+                    if(b.customId == "previousButtonHistory" && page > 1){
+                        if(embeds[page]){
+                            await b.update({ embeds: [embeds[page]], components: [actionRow] })
+                            await page--
+                            await createCollector()
+                        } else {
+                            console.log(page, embeds[page])
+                        }
+                       
+                    } else if(b.customId == "nextButtonHistory" && page < embeds.length) {
+                        if(embeds[page]){
+                            await b.update({ embeds: [embeds[page]], components: [actionRow] })
+                            await page++
+                            await createCollector()
+                        } else {
+                            console.log(page, embeds[page])
+                        }
+                    }
+                } else {
+                    b.reply({ content: `These buttons aren't for you!`, ephemeral: true });
                 }
-            } else {
-                b.reply({ content: `These buttons aren't for you!`, ephemeral: true });
             }
+            await createCollector()
         } else {
             interaction.reply("You don't have any history!")
         }
