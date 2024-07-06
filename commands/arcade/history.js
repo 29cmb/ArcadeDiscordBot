@@ -1,7 +1,16 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const axios = require('axios')
 const db = require("../../modules/db.js")
 const encryption = require("../../modules/encryption.js")
+
+const previousButton = new ButtonBuilder()
+.setCustomId("previousButtonHistory")
+.setEmoji("⬅️")
+.setStyle(ButtonStyle.Primary)
+const nextButton = new ButtonBuilder()
+.setCustomId("nextButtonHistory")
+.setEmoji("➡️")
+.setStyle(ButtonStyle.Primary)
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -32,9 +41,17 @@ module.exports = {
                 response.data.data.forEach(s => {
                     console.log(s)
                     const embed = new EmbedBuilder()
-                    .setTitle("Arcade History")
+                    .setAuthor({name: "Arcade History"})
+                    .setTitle(s.work)
+                    .addFields(
+                        { name: "Date created", value: s.createdAt },
+                        { name: "Minutes earned", value: s.ended == true ? s.elapsed.toString() : "Session in Progress" },
+                        { name: "Goal", value: s.goal}
+                    )
                     .setThumbnail("https://imgs.search.brave.com/SPM80GBg6hoGnZCbJf4-PzyiqWlJRGPiRJTdrPh17HA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMuaGFja2NsdWIu/Y29tL2ljb24tcm91/bmRlZC5zdmc")  
                     .setTimestamp()
+                    .setFooter({text: "Unofficial  •  Made by devcmb", iconURL: "https://cdn.discordapp.com/avatars/998343447524155402/ee6966eccb8f087f54da4c204ab19b29.webp?size=80"})
+                    .setColor("Red")
                     embeds.push(embed)
                 })
             } else {
@@ -46,9 +63,10 @@ module.exports = {
         })
 
         if(embeds.length != 0){
-            interaction.reply({ embeds: [embeds[page - 1]] })
-        } else {
             
+            interaction.reply({ embeds: [embeds[page - 1]], buttons: [previousButton, nextButton] })
+        } else {
+            interaction.reply("You don't have any history!")
         }
 	},
 };
