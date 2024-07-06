@@ -4,11 +4,11 @@ const db = require("../../modules/db.js")
 const encryption = require("../../modules/encryption.js");
 
 const previousButton = new ButtonBuilder()
-.setCustomId("previousButtonHistory")
+.setCustomId("previousButtonGoals")
 .setEmoji("⬅️")
 .setStyle(ButtonStyle.Primary)
 const nextButton = new ButtonBuilder()
-.setCustomId("nextButtonHistory")
+.setCustomId("nextButtonGoals")
 .setEmoji("➡️")
 .setStyle(ButtonStyle.Primary)
 const actionRow = new ActionRowBuilder()
@@ -16,8 +16,8 @@ actionRow.addComponents(previousButton, nextButton)
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('history')
-		.setDescription('View your arcade history'),
+		.setName('goals')
+		.setDescription('View your arcade goals'),
 	async execute(interaction) {
         await db.client.connect()
         const data = await db.collections.credentials.findOne({userId: interaction.user.id})
@@ -28,7 +28,7 @@ module.exports = {
         const slackID = encryption.decrypt(data.slackId)
         const key = encryption.decrypt(data.apiKey)
 
-        const url = `https://hackhour.hackclub.com/api/history/${slackID}`
+        const url = `https://hackhour.hackclub.com/api/goals/${slackID}`
         var embeds = []
         var page = 1
 
@@ -41,20 +41,20 @@ module.exports = {
         }).then(response => {
             if(response.data.ok == true){
                 var p = 1
-                response.data.data.forEach(s => {
+                
+                if(!response.data.data) return;
+                response.data.data.forEach(async g => {
                     const embed = new EmbedBuilder()
-                    .setAuthor({name: "Arcade History"})
-                    .setTitle(s.work)
+                    .setAuthor({name: "Arcade Goals"})
+                    .setTitle(g.name)
                     .addFields(
-                        { name: "Date created", value: s.createdAt },
-                        { name: "Minutes earned", value: s.ended == true ? s.elapsed.toString() : "Session in Progress" },
-                        { name: "Goal", value: s.goal}
+                        { name: "Minutes earned", value: g.minutes.toString() },
                     )
                     .setThumbnail("https://imgs.search.brave.com/SPM80GBg6hoGnZCbJf4-PzyiqWlJRGPiRJTdrPh17HA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMuaGFja2NsdWIu/Y29tL2ljb24tcm91/bmRlZC5zdmc")  
                     .setTimestamp()
                     .setFooter({text: `Unofficial  •  Made by devcmb  •  Page ${p}/${response.data.data.length}`, iconURL: "https://cdn.discordapp.com/avatars/998343447524155402/ee6966eccb8f087f54da4c204ab19b29.webp?size=80"})
                     .setColor("Red")
-                    p++
+                    await p++
                     embeds.push(embed)
                 })
             } else {
@@ -70,7 +70,7 @@ module.exports = {
             async function createCollector(){
                 const b = await reply.awaitMessageComponent({ time: 240_000 })
                 if(b.user.id == interaction.user.id){
-                    if(b.customId == "previousButtonHistory" && page > 1){
+                    if(b.customId == "previousButtonGoals" && page > 1){
                         if(embeds[page]){
                             await b.update({ embeds: [embeds[page]], components: [actionRow] })
                             await page--
@@ -79,7 +79,7 @@ module.exports = {
                             page++
                             await b.deferUpdate();
                         }
-                    } else if(b.customId == "nextButtonHistory" && page < embeds.length) {
+                    } else if(b.customId == "nextButtonGoals" && page < embeds.length) {
                         if(embeds[page]){
                             await b.update({ embeds: [embeds[page]], components: [actionRow] })
                             await page++
@@ -97,7 +97,7 @@ module.exports = {
             }
             await createCollector()
         } else {
-            interaction.reply("You don't have any history!")
+            interaction.reply("You don't have any goals!")
         }
 	},
 };
