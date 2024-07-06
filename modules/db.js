@@ -1,7 +1,7 @@
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = `mongodb+srv://${process.env.dbUsername}:${process.env.dbPassword}@${process.env.dbURL}/?appName=${process.env.dbAppName}`;
-
+const uri = `mongodb+srv://${process.env.dbUsername}:${process.env.dbPassword}@${process.env.dbURL}/?retryWrites=true&w=majority&appName=${process.env.dbAppName}`;
+console.log(uri)
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -12,7 +12,13 @@ const client = new MongoClient(uri, {
 
 const database = client.db(process.env.dbName)
 
+console.log(process.env.dbName, process.env.credentialsCollectionName)
+
 module.exports = {
+    client: client,
+    databases: {
+        main: database
+    },
     collections: {
         credentials: database.collection(process.env.credentialsCollectionName) 
     },
@@ -25,66 +31,5 @@ module.exports = {
             await client.close();
         }
     },
-    async insertOne(collection, data){
-        var success = false
-
-        try {
-            await collection.insertOne(data)
-            success = true
-        }catch(e){
-            console.log(e)
-            success = false
-        }
-
-        return success
-    },
-    async findAll(collection, query){
-        try {
-            await client.connect();
-            const results = await collection.find(query)
-            client.close()
-            return results
-        } catch(e) {
-            console.log(e)
-            client.close()
-            return false
-        }
-    },
-    async findOne(collection, query){
-        try {
-            await client.connect()
-            const results = await collection.findOne(query)
-            client.close()
-            return results
-        } catch(e) {
-            console.log(e)
-            client.close()
-            return false
-        }
-    },
-    async deleteOne(collection, query){
-        try {
-            await client.connect()
-            await collection.deleteOne(query)
-            client.close()
-            return true
-        } catch(e) {
-            console.log(e)
-            client.close()
-            return false
-        }
-    },
-    async updateOne(collection, query, update){
-        try {
-            await client.connect()
-            await collection.findOneAndUpdate(query, update)
-            client.close()
-            return true
-        } catch(e) {
-            console.log(e)
-            client.close()
-            return false
-        }
-    }
+    
 }
-

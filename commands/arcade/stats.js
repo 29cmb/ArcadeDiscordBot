@@ -7,10 +7,12 @@ module.exports = {
 		.setName('stats')
 		.setDescription('Checks your stats'),
 	async execute(interaction) {
-        const data = await db.findOne(db.collections.credentials, {userId: interaction.user.id})
+        await db.client.connect()
+        const data = await db.collections.credentials.findOne({userId: interaction.user.id}).then(() => {
+            db.client.close()
+        })
 		if(!data) return interaction.reply("You need to run /register first!")
 
-        console.log(data, data.slackId, data.apiKey)
         const slackID = encryption.decrypt(data.slackId)
         const key = encryption.decrypt(data.apiKey)
         
