@@ -23,7 +23,7 @@ for (const folder of commandFolders) {
 	}
 }
 
-client.on(Discord.Events.ClientReady, () => {
+client.once(Discord.Events.ClientReady, () => {
     console.log("Bot online")
 })
 
