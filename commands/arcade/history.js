@@ -76,17 +76,20 @@ module.exports = {
                             await page--
                             await createCollector()
                         } else {
-                            console.log(page, embeds[page])
+                            page++
+                            await b.deferUpdate();
                         }
-                       
                     } else if(b.customId == "nextButtonHistory" && page < embeds.length) {
                         if(embeds[page]){
                             await b.update({ embeds: [embeds[page]], components: [actionRow] })
                             await page++
                             await createCollector()
                         } else {
-                            console.log(page, embeds[page])
+                            page--
+                            await b.deferUpdate();
                         }
+                    } else {
+                        await b.deferUpdate();
                     }
                 } else {
                     b.reply({ content: `These buttons aren't for you!`, ephemeral: true });
