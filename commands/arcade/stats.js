@@ -27,7 +27,7 @@ module.exports = {
             if(response.data.ok == true){
                 interaction.reply({ content: `Total Sessions: ${response.data.data.sessions}\nTotal minutes: ${response.data.data.total}`, ephemeral: true})
             } else {
-                interaction.reply({ content: `The api returned an error: ${response.data.error}`})
+                interaction.reply({ content: `The api returned an error: ${response.data.error}`, ephemeral: true})
             }
         }).catch(e => {
             interaction.reply({ content: `An unknown error occured when trying to reach the api. This is most likely a hack club outage.`, ephemeral: true})

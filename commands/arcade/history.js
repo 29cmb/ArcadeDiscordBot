@@ -58,7 +58,7 @@ module.exports = {
                     embeds.push(embed)
                 })
             } else {
-                interaction.reply({ content: `The api returned an error: ${response.data.error}`})
+                interaction.reply({ content: `The api returned an error: ${response.data.error}`, ephemeral: true})
             }
         }).catch(e => {
             console.log(e)
