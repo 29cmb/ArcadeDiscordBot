@@ -1,6 +1,4 @@
 const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle } = require('discord.js');
-const axios = require('axios')
-
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('register')
@@ -12,22 +10,24 @@ module.exports = {
 
         const slackID = new TextInputBuilder()
         .setCustomId("slackID")
-        .setLabel("What is your slack ID? Don't know? Check the #what-is-my-slack-id channel on the hackclub slack.")
+        .setLabel("What is your slack ID?")
         .setStyle(TextInputStyle.Short)
-        .setPlaceholder("Slack ID")
-        .setRequired(false);
+        .setPlaceholder("\"#what-is-my-slack-id\" on the HackClub slack")
+        .setRequired(true);
 
         const apiKey = new TextInputBuilder()
         .setCustomId("apiKey")
-        .setLabel("What is your hack club API key? Don't know? Run /api in any channel in the hackclub slack.")
+        .setLabel("What is your hack club API key?")
         .setStyle(TextInputStyle.Short)
-        .setPlaceholder("API Key")
-        .setRequired(false);
+        .setPlaceholder("\"/api\" in the hackclub slack")
+        .setRequired(true);
 
         const confirmation = new TextInputBuilder()
         .setCustomId("confirmation")
-        .setLabel("Confirm that all details above are correct and then type \"confirm\", then hit submit. All data is encrypted and the bot source code is avilable on github.")
-        .setRequired(false);
+        .setLabel("Type \"confirm\" to continue")
+        .setPlaceholder("All data is encrypted, bot source code is on github.")
+        .setStyle(TextInputStyle.Short)
+        .setRequired(true);
 
         modal.addComponents(new ActionRowBuilder().addComponents(slackID), new ActionRowBuilder().addComponents(apiKey), new ActionRowBuilder().addComponents(confirmation))
 

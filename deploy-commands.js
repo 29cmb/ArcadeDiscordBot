@@ -28,7 +28,7 @@ module.exports = async () => {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
 		const data = await rest.put(
-			Routes.applicationCommands(process.env.ClientId),
+			Routes.applicationGuildCommands(process.env.ClientId, "1206337773158662214"),
 			{ body: commands },
 		);
 

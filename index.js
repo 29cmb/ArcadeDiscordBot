@@ -1,3 +1,5 @@
+// Remember to change deploy-commands back to gloabl scope
+
 const Discord = require("discord.js")
 const fs = require('fs')
 const path = require('path')
