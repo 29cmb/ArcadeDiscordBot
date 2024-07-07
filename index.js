@@ -63,17 +63,26 @@ app.get("/", (req, res) => {
 	res.send("Express server online")
 })
 
-slackApp.command("/link", async ({command, ack, respond }) => {
-	try {
-		await ack();
-		const threadChannelId = command.channel_id;
-		await respond({
-			text: `Thread channel ID: ${threadChannelId}`,
-		});
-	} catch(e) {
-		console.error('Error handling slash command: ', error);
-	}
-})
+app.post('/link', async (req, res) => {
+    const payload = req.body;
+
+    if (payload && payload.command === '/link') {
+        try {
+            res.status(200).send();
+            const threadChannelId = payload.channel_id;
+
+            await slackApp.client.chat.postMessage({
+                channel: threadChannelId,
+                text: `Thread channel ID: ${threadChannelId}`,
+            });
+        } catch (error) {
+            console.error('Error handling slash command: ', error);
+            res.status(500).send('Internal Server Error');
+        }
+    } else {
+        res.status(400).send('Bad Request');
+    }
+});
 
 app.head("/", (req, res) => {})
 app.options("/", (req, res) => {})
