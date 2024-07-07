@@ -1,7 +1,8 @@
-const { SlashCommandBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, Events, ComponentType, ThreadAutoArchiveDuration } = require('discord.js');
+const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ThreadAutoArchiveDuration } = require('discord.js');
 const axios = require('axios')
 const db = require("../../modules/db.js")
 const encryption = require("../../modules/encryption.js");
+const { ActionRowBuilder } = require('@discordjs/builders');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -39,12 +40,21 @@ module.exports = {
             if(response.data.ok){
                 await interaction.deferReply();
                 const sentMsg = await interaction.editReply("Session started!");
-                
-                await sentMsg.startThread({
-                    name: interaction.user.username,
+
+                const thread = await sentMsg.startThread({
+                    name: `${interaction.user.username}'s Arcade Session`,
                     autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
                     reason: `${interaction.user.username} finished their hour!`
                 });
+
+                const button = new ButtonBuilder()
+                .setLabel("Enable bridge")
+                .setStyle(ButtonStyle.Success)
+                .setCustomId("enableBridge")
+                const actionRow = new ActionRowBuilder()
+                actionRow.addComponents([button])
+
+                thread.send({ content: `@<${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
 
             } else {
                 if(response.data.error == "You already have an active session"){
