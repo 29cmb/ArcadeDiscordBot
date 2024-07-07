@@ -60,19 +60,15 @@ module.exports = {
                 const startTime = Date.now()
                 if(b.user.id == interaction.user.id){
                     if(b.customId == "enableBridge"){
-                        function createMessageCollector(){
-                            const collectorFilter = i => i.user.id === interaction.user.id;
-                            const collector = new MessageCollector(thread, {collectorFilter, time: 3_600_000 })
-                            collector.on("collect", (message) => {
-                                // oh no the scary part where I need to actually bridge the message
-                            })
+                        const collectorFilter = i => i.user.id === interaction.user.id;
+                        const collector = new MessageCollector(thread, {collectorFilter, time: 3_600_000 })
+                        collector.on("collect", (message) => {
+                            // oh no the scary part where I need to actually bridge the message
+                        })
 
-                            collector.on("end", (message) => {
-                                thread.send(`<@${interaction.user.id}> finished their hour!`)
-                            })
-                        }
-                    } else {
-                        
+                        collector.on("end", (message) => {
+                            thread.send(`<@${interaction.user.id}> finished their hour!`)
+                        })
                     }
                 } else {
                     b.reply({ content: `These buttons aren't for you!`, ephemeral: true });
