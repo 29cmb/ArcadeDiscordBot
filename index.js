@@ -42,12 +42,12 @@ const db = require("./modules/db.js")
 db.run()
 
 // Slack
-const { App } = require('@slack/bolt');
-const { WebClient } = require('@slack/web-api');
-const slackApp = new App({
-	signingSecret: process.env.SLACK_SIGNING_SECRET,
-	token: process.env.SLACK_BOT_TOKEN,
-});
+// const { App } = require('@slack/bolt');
+// const { WebClient } = require('@slack/web-api');
+// const slackApp = new App({
+// 	signingSecret: process.env.SLACK_SIGNING_SECRET,
+// 	token: process.env.SLACK_BOT_TOKEN,
+// });
 
 (async () => {
 	await slackApp.start(process.env.SLACK_PORT || 3500);
@@ -63,6 +63,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
 	res.send("Express server online")
 })
+
+app.listen(process.env.PORT || 3000)
 
 client.login(process.env.Token)
 
