@@ -48,10 +48,10 @@ require("./modules/db.js").run()
 // 	token: process.env.SLACK_BOT_TOKEN,
 // });
 
-(async () => {
-	await slackApp.start(process.env.SLACK_PORT || 3500);
-	console.log('⚡️ Bolt app is running!');
-})();
+// (async () => {
+// 	await slackApp.start(process.env.SLACK_PORT || 3500);
+// 	console.log('⚡️ Bolt app is running!');
+// })();
 
 const express = require('express')
 const bodyParser = require('body-parser');
