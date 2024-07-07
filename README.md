@@ -12,12 +12,8 @@ Control your arcade sessions through the bot, using the commands such as
 ...and more!
 
 ## Feature Checklist
-[x] Starting sessions
-
-[x] Ending sessions
-
-[x] Pausing sessions
-
-[ ] Sending messages from discord to slack
-
-[ ] Setting goals
+- [x] Starting sessions
+- [x] Ending sessions
+- [x] Pausing sessions
+- [ ] Sending messages from discord to slack
+- [ ] Setting goals
