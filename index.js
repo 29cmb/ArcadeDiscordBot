@@ -38,6 +38,20 @@ for (const file of eventFiles) {
 	}
 }
 
+// Slack
+const { App } = require('@slack/bolt');
+const { WebClient } = require('@slack/web-api');
+const slackApp = new App({
+	signingSecret: process.env.SLACK_SIGNING_SECRET,
+	token: process.env.SLACK_BOT_TOKEN,
+});
+
+(async () => {
+	await slackApp.start(3500);
+	console.log('⚡️ Bolt app is running!');
+})();
+
+
 const express = require('express')
 const app = express()
 
@@ -52,25 +66,16 @@ app.post("/link", (req, res) => {
 	res.send('Received');
 })
 
-app.listen(5000, () => {
+app.head("/", (req, res) => {})
+app.options("/", (req, res) => {})
+
+app.listen(process.env.PORT || 5000, () => {
 	console.log("express server online")
 })
+
 
 
 require("./modules/deploy-commands")()
 require("./modules/db.js").run()
 client.login(process.env.Token)
-
-// Slack
-const { App } = require('@slack/bolt');
-const { WebClient } = require('@slack/web-api');
-const slackApp = new App({
-	signingSecret: process.env.SLACK_SIGNING_SECRET,
-	token: process.env.SLACK_BOT_TOKEN,
-});
-
-(async () => {
-	await slackApp.start(3500);
-	console.log('⚡️ Bolt app is running!');
-})();
 
