@@ -54,46 +54,15 @@ const slackApp = new App({
 	console.log('⚡️ Bolt app is running!');
 })();
 
-const slack = require('slack-express')
 const express = require('express')
 const bodyParser = require('body-parser');
 const app = express()
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
 	res.send("Express server online")
 })
-
-app.post('/link', async (req, res) => {
-    const payload = req.body;
-
-    if (payload && payload.command === '/link') {
-        try {
-            res.status(200).send();
-            const threadChannelId = payload.channel_id;
-
-            await slackApp.client.chat.postMessage({
-                channel: threadChannelId,
-                text: `Thread channel ID: ${threadChannelId}`,
-            });
-        } catch (error) {
-            console.error('Error handling slash command: ', error);
-            res.status(500).send('Internal Server Error');
-        }
-    } else {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.head("/", (req, res) => {})
-app.options("/", (req, res) => {})
-
-app.listen(process.env.PORT || 5000, () => {
-	console.log("express server online")
-})
-
-
-
 
 client.login(process.env.Token)
 
