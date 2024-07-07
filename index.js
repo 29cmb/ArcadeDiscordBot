@@ -37,6 +37,9 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
 }
+require("./modules/deploy-commands")()
+const db = require("./modules/db.js")
+db.run()
 
 // Slack
 const { App } = require('@slack/bolt');
@@ -47,23 +50,29 @@ const slackApp = new App({
 });
 
 (async () => {
-	await slackApp.start(3500);
+	await slackApp.start(process.env.SLACK_PORT || 3500);
 	console.log('⚡️ Bolt app is running!');
 })();
 
-
+const slack = require('slack-express')
 const express = require('express')
 const app = express()
-
 app.use(express.json())
 
 app.get("/", (req, res) => {
 	res.send("Express server online")
 })
 
-app.post("/link", (req, res) => {
-	console.log(req.body)
-	res.send('Received');
+slackApp.command("/link", async ({command, ack, respond }) => {
+	try {
+		await ack();
+		const threadChannelId = command.channel_id;
+		await respond({
+			text: `Thread channel ID: ${threadChannelId}`,
+		});
+	} catch(e) {
+		console.error('Error handling slash command: ', error);
+	}
 })
 
 app.head("/", (req, res) => {})
@@ -75,7 +84,6 @@ app.listen(process.env.PORT || 5000, () => {
 
 
 
-require("./modules/deploy-commands")()
-require("./modules/db.js").run()
+
 client.login(process.env.Token)
 
