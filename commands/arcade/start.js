@@ -98,7 +98,24 @@ module.exports = {
                     const actionRow = new ActionRowBuilder()
                     actionRow.addComponents([button])
 
-                    thread.send({ content: `<@${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
+                    const reply = thread.send({ content: `<@${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
+                    const b = await reply.awaitMessageComponent({ time: 3_600_000 }) // 1 hour
+                    const startTime = Date.now()
+                    if(b.user.id == interaction.user.id){
+                        if(b.customId == "enableBridge"){
+                            const collectorFilter = i => i.user.id === interaction.user.id;
+                            const collector = new MessageCollector(thread, {collectorFilter, time: 3_600_000 })
+                            collector.on("collect", (message) => {
+                                // oh no the scary part where I need to actually bridge the message
+                            })
+
+                            collector.on("end", (message) => {
+                                thread.send(`<@${interaction.user.id}> finished their hour!`)
+                            })
+                        }
+                    } else {
+                        b.reply({ content: `These buttons aren't for you!`, ephemeral: true });
+                    }
                 } else {
                     interaction.reply({ content: `An unknown error occured when trying to reach the api. This is most likely a hack club outage.\n${e}`, ephemeral: true})
                 }
