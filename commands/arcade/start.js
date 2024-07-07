@@ -37,12 +37,15 @@ module.exports = {
             }
         }).then(async response => {
             if(response.data.ok){
-                const msg = await interaction.reply("Session started!");
-                const thread = await msg.startThread({
+                await interaction.deferReply();
+                const sentMsg = await interaction.editReply("Session started!");
+                
+                await sentMsg.startThread({
                     name: interaction.user.username,
                     autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
                     reason: `${interaction.user.username} finished their hour!`
                 });
+
             } else {
                 if(response.data.error == "You already have an active session"){
                     interaction.reply("You already have an active session!")
