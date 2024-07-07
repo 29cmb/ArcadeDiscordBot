@@ -37,30 +37,31 @@ module.exports = {
                 "Content-Tye": "application/json"
             }
         }).then(async response => {
-            if(response.data.ok){
-                await interaction.deferReply();
-                const sentMsg = await interaction.editReply("Session started!");
+            await interaction.deferReply();
+            const sentMsg = await interaction.editReply("Session started!");
 
-                const thread = await sentMsg.startThread({
-                    name: `${interaction.user.username}'s Arcade Session`,
-                    autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
-                    reason: `${interaction.user.username} finished their hour!`
-                });
+            const thread = await sentMsg.startThread({
+                name: `${interaction.user.username}'s Arcade Session`,
+                autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+                reason: `${interaction.user.username} finished their hour!`
+            });
 
-                const button = new ButtonBuilder()
-                .setLabel("Enable bridge")
-                .setStyle(ButtonStyle.Success)
-                .setCustomId("enableBridge")
-                const actionRow = new ActionRowBuilder()
-                actionRow.addComponents([button])
+            const button = new ButtonBuilder()
+            .setLabel("Enable bridge")
+            .setStyle(ButtonStyle.Success)
+            .setCustomId("enableBridge")
+            const actionRow = new ActionRowBuilder()
+            actionRow.addComponents([button])
 
-                thread.send({ content: `@<${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
+            thread.send({ content: `<@${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
+            // if(response.data.ok){
+                
 
-            } else {
-                if(response.data.error == "You already have an active session"){
-                    interaction.reply("You already have an active session!")
-                }
-            }
+            // } else {
+            //     if(response.data.error == "You already have an active session"){
+            //         interaction.reply("You already have an active session!")
+            //     }
+            // }
         }).catch(e => {
             if(e.response){
                 if(e.response.data.error == "You already have an active session"){
