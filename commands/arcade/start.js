@@ -3,7 +3,7 @@ const axios = require('axios')
 const db = require("../../modules/db.js")
 const encryption = require("../../modules/encryption.js");
 const { ActionRowBuilder } = require('@discordjs/builders');
-const clamp = (val, min, max) => Math.min(Math.max(val, min), max)
+const r = require("../../modules/response.js")
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -40,7 +40,7 @@ module.exports = {
         }).then(async response => {
             if(response.data.ok){
                 await interaction.deferReply();
-                const sentMsg = await interaction.editReply("Session started!");
+                const sentMsg = await interaction.editReply(r("start", interaction.user));
 
                 const thread = await sentMsg.startThread({
                     name: `${interaction.user.username}'s Arcade Session`,

@@ -17,7 +17,7 @@ module.exports = {
         const slackID = encryption.decrypt(data.slackId)
         const key = encryption.decrypt(data.apiKey)
         
-        const url = `https://hackhour.hackclub.com/api/pause/${slackID}`
+        const url = `https://hackhour.hackclub.com/api/cancel/${slackID}`
         axios.post(url, {}, {
             headers: {
                 "Authorization": `Bearer ${key}`,
@@ -26,11 +26,7 @@ module.exports = {
             }
         }).then(response => {
             if(response.data.ok == true){
-                if(response.data.data.paused == true){
-                    interaction.reply({ content: r("paused", interaction.user) })
-                } else if(response.data.data.paused == false) {
-                    interaction.reply({ content: r("resume", interaction.user) })
-                }
+                interaction.reply({ content: r("end", interaction.user) })
             } else {
                 interaction.reply({ content: `The api returned an error: ${response.data.error}`, ephemeral: true})
             }

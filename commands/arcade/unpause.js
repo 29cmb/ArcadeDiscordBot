@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const axios = require('axios')
 const db = require("../../modules/db.js")
 const encryption = require("../../modules/encryption.js")
+const r = require("../../modules/response.js")
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('unpause')
@@ -26,9 +27,9 @@ module.exports = {
         }).then(response => {
             if(response.data.ok == true){
                 if(response.data.data.paused == true){
-                    interaction.reply({ content: "Your session is now paused. Take a break!" })
+                    interaction.reply({ content: r("paused") })
                 } else if(response.data.data.paused == false) {
-                    interaction.reply({ content: "Ready, set, go make things!" })
+                    interaction.reply({ content: r("resume") })
                 }
             } else {
                 interaction.reply({ content: `The api returned an error: ${response.data.error}`, ephemeral: true})
