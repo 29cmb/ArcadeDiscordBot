@@ -38,6 +38,23 @@ for (const file of eventFiles) {
 	}
 }
 
+const express = require('express')
+const app = express()
+
+app.use(express.json())
+
+app.get("/", (req, res) => {
+	res.send("Express server online")
+})
+
+app.post("/link", (req, res) => {
+	console.log(req.body)
+})
+
+app.listen(5000, () => {
+	console.log("express server online")
+})
+
 
 require("./modules/deploy-commands")()
 require("./modules/db.js").run()
