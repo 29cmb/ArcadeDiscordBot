@@ -1,9 +1,8 @@
-const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ThreadAutoArchiveDuration, MessageCollector } = require('discord.js');
+const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ThreadAutoArchiveDuration } = require('discord.js');
 const axios = require('axios')
 const db = require("../../modules/db.js")
 const encryption = require("../../modules/encryption.js");
 const { ActionRowBuilder } = require('@discordjs/builders');
-const clamp = (val, min, max) => Math.min(Math.max(val, min), max)
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -55,25 +54,7 @@ module.exports = {
                 const actionRow = new ActionRowBuilder()
                 actionRow.addComponents([button])
 
-                const reply = thread.send({ content: `<@${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
-                const b = await reply.awaitMessageComponent({ time: 3_600_000 }) // 1 hour
-                const startTime = Date.now()
-                if(b.user.id == interaction.user.id){
-                    if(b.customId == "enableBridge"){
-                        const collectorFilter = i => i.user.id === interaction.user.id;
-                        const collector = thread.createMessageCollector({ filter: collectorFilter, time: 3_600_000 });
-                        
-                        collector.on("collect", (message) => {
-                            // oh no the scary part where I need to actually bridge the message
-                        })
-
-                        collector.on("end", (message) => {
-                            thread.send(`<@${interaction.user.id}> finished their hour!`)
-                        })
-                    }
-                } else {
-                    b.reply({ content: `These buttons aren't for you!`, ephemeral: true });
-                }
+                thread.send({ content: `<@${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
             } else {
                 if(response.data.error == "You already have an active session"){
                     interaction.reply("You already have an active session!")
@@ -99,24 +80,7 @@ module.exports = {
                     const actionRow = new ActionRowBuilder()
                     actionRow.addComponents([button])
 
-                    const reply = thread.send({ content: `<@${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
-                    const b = await reply.awaitMessageComponent({ time: 3_600_000 }) // 1 hour
-                    const startTime = Date.now()
-                    if(b.user.id == interaction.user.id){
-                        if(b.customId == "enableBridge"){
-                            const collectorFilter = i => i.user.id === interaction.user.id;
-                            const collector = new MessageCollector(thread, {collectorFilter, time: 3_600_000 })
-                            collector.on("collect", (message) => {
-                                // oh no the scary part where I need to actually bridge the message
-                            })
-
-                            collector.on("end", (message) => {
-                                thread.send(`<@${interaction.user.id}> finished their hour!`)
-                            })
-                        }
-                    } else {
-                        b.reply({ content: `These buttons aren't for you!`, ephemeral: true });
-                    }
+                    thread.send({ content: `<@${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
                 } else {
                     interaction.reply({ content: `An unknown error occured when trying to reach the api. This is most likely a hack club outage.\n${e}`, ephemeral: true})
                 }
