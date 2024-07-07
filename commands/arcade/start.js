@@ -1,8 +1,9 @@
-const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ThreadAutoArchiveDuration } = require('discord.js');
+const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ThreadAutoArchiveDuration, MessageCollector } = require('discord.js');
 const axios = require('axios')
 const db = require("../../modules/db.js")
 const encryption = require("../../modules/encryption.js");
 const { ActionRowBuilder } = require('@discordjs/builders');
+const clamp = (val, min, max) => Math.min(Math.max(val, min), max)
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -54,7 +55,28 @@ module.exports = {
                 const actionRow = new ActionRowBuilder()
                 actionRow.addComponents([button])
 
-                thread.send({ content: `<@${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
+                const reply = thread.send({ content: `<@${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
+                const b = await reply.awaitMessageComponent({ time: 3_600_000 }) // 1 hour
+                const startTime = Date.now()
+                if(b.user.id == interaction.user.id){
+                    if(b.customId == "enableBridge"){
+                        function createMessageCollector(){
+                            const collectorFilter = i => i.user.id === interaction.user.id;
+                            const collector = new MessageCollector(thread, {collectorFilter, time: 3_600_000 })
+                            collector.on("collect", (message) => {
+                                // oh no the scary part where I need to actually bridge the message
+                            })
+
+                            collector.on("end", (message) => {
+                                thread.send(`<@${interaction.user.id}> finished their hour!`)
+                            })
+                        }
+                    } else {
+                        
+                    }
+                } else {
+                    b.reply({ content: `These buttons aren't for you!`, ephemeral: true });
+                }
             } else {
                 if(response.data.error == "You already have an active session"){
                     interaction.reply("You already have an active session!")
