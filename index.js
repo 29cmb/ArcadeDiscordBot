@@ -38,8 +38,7 @@ for (const file of eventFiles) {
 	}
 }
 require("./modules/deploy-commands")()
-const db = require("./modules/db.js")
-db.run()
+require("./modules/db.js").run()
 
 // Slack
 // const { App } = require('@slack/bolt');
