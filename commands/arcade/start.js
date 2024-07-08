@@ -70,7 +70,7 @@ module.exports = {
                         const messageCollector = new MessageCollector(thread, { time: 3_600_000 });
 
                         messageCollector.on('collect', message => {
-                            // oh no the scary part
+                            console.log(message)
                         });
 
                         messageCollector.on('end', collected => {
