@@ -5,8 +5,8 @@ const encryption = require("../../modules/encryption.js")
 const r = require("../../modules/response.js")
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('pause')
-		.setDescription('Pause your active session'),
+		.setName('end')
+		.setDescription('End your active session'),
 	async execute(interaction) {
         await db.client.connect()
         const data = await db.collections.credentials.findOne({userId: interaction.user.id})
