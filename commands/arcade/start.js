@@ -48,35 +48,8 @@ module.exports = {
                     reason: `${interaction.user.username} finished their hour!`
                 });
 
-                const button = new ButtonBuilder()
-                    .setLabel("Enable bridge")
-                    .setStyle(ButtonStyle.Success)
-                    .setCustomId("enableBridge");
-
-                const actionRow = new ActionRowBuilder().addComponents([button]);
-
                 await thread.send({
                     content: `<@${interaction.user.id}> started a 1 hour arcade session!`,
-                    components: [actionRow]
-                });
-
-                const filter = i => i.customId === 'enableBridge' && i.user.id === interaction.user.id;
-                const collector = thread.createMessageComponentCollector({ filter, time: 3_600_000 });
-
-                collector.on('collect', async i => {
-                    if (i.customId === 'enableBridge') {
-                        await i.deferUpdate();
-
-                        const messageCollector = new MessageCollector(thread, { time: 3_600_000 });
-
-                        messageCollector.on('collect', message => {
-                            console.log(message)
-                        });
-
-                        messageCollector.on('end', collected => {
-                            thread.send(`<@${interaction.user.id}> finished their hour!`);
-                        });
-                    }
                 });
             } else {
                 if(response.data.error == "You already have an active session"){
