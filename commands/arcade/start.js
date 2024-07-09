@@ -40,39 +40,39 @@ module.exports = {
         }).then(async response => {
             if(response.data.ok){
                 await interaction.deferReply();
-                    const sentMsg = await interaction.editReply("Session started!");
+                const sentMsg = await interaction.editReply("Session started!");
 
-                    const thread = await sentMsg.startThread({
-                        name: `${interaction.user.username}'s Arcade Session`,
-                        autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
-                        reason: `${interaction.user.username} finished their hour!`
-                    });
+                const thread = await sentMsg.startThread({
+                    name: `${interaction.user.username}'s Arcade Session`,
+                    autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+                    reason: `${interaction.user.username} finished their hour!`
+                });
 
-                    const button = new ButtonBuilder()
-                    .setLabel("Enable bridge")
-                    .setStyle(ButtonStyle.Success)
-                    .setCustomId("enableBridge")
-                    const actionRow = new ActionRowBuilder()
-                    actionRow.addComponents([button])
+                const button = new ButtonBuilder()
+                .setLabel("Enable bridge")
+                .setStyle(ButtonStyle.Success)
+                .setCustomId("enableBridge")
+                const actionRow = new ActionRowBuilder()
+                actionRow.addComponents([button])
 
-                    const reply = thread.send({ content: `<@${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
-                    const b = await reply.awaitMessageComponent({ time: 3_600_000 }) // 1 hour
-                    const startTime = Date.now()
-                    if(b.user.id == interaction.user.id){
-                        if(b.customId == "enableBridge"){
-                            const collectorFilter = i => i.user.id === interaction.user.id;
-                            const collector = new MessageCollector(thread, {collectorFilter, time: 3_600_000 })
-                            collector.on("collect", (message) => {
-                                // oh no the scary part where I need to actually bridge the message
-                            })
+                const reply = await thread.send({ content: `<@${interaction.user.id}> started a 1 hour arcade session!`, components: [actionRow] })
+                const b = await reply.awaitMessageComponent({ time: 3_600_000 }) // 1 hour
+                const startTime = Date.now()
+                if(b.user.id == interaction.user.id){
+                    if(b.customId == "enableBridge"){
+                        const collectorFilter = i => i.user.id === interaction.user.id;
+                        const collector = new MessageCollector(thread, {collectorFilter, time: 3_600_000 })
+                        collector.on("collect", (message) => {
+                            // oh no the scary part where I need to actually bridge the message
+                        })
 
-                            collector.on("end", (message) => {
-                                thread.send(`<@${interaction.user.id}> finished their hour!`)
-                            })
-                        }
-                    } else {
-                        b.reply({ content: `These buttons aren't for you!`, ephemeral: true });
+                        collector.on("end", (message) => {
+                            thread.send(`<@${interaction.user.id}> finished their hour!`)
+                        })
                     }
+                } else {
+                    b.reply({ content: `These buttons aren't for you!`, ephemeral: true });
+                }
             } else {
                 if(response.data.error == "You already have an active session"){
                     interaction.reply("You already have an active session!")
